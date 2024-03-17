@@ -1,18 +1,35 @@
-# vit_combo_box
+This project focus on providing the three widgets:
 
-A new Flutter plugin project.
+- VitComboBox: A generic implementation for a combobox.
 
-## Getting Started
+- FutureComboBox: Accepts a future as data source. While the future is not completed, a indicator is shown.
 
-This project is a starting point for a Flutter
-[plug-in package](https://flutter.dev/developing-packages/),
-a specialized package that includes platform-specific implementation code for
-Android and/or iOS.
+- CheckedComboBox: A combobox containing a checkboxes in its overlay.
 
-For help getting started with Flutter development, view the
-[online documentation](https://flutter.dev/docs), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+Every implementation is focused on providing the maximum customizability. Meaning that the widget can look however you want, so it fits with your design language.
 
-The plugin project was generated without specifying the `--platforms` flag, no platforms are currently supported.
-To add platforms, run `flutter create -t plugin --platforms <platforms> .` in this directory.
-You can also find a detailed instruction on how to add platforms in the `pubspec.yaml` at https://flutter.dev/docs/development/packages-and-plugins/developing-packages#plugin-platforms.
+# Usage
+
+```dart
+ // Regular combo box
+VitComboBox(
+    label: 'My combo box',
+    options: optionsSet,
+    selection: selectedOption,
+    itemBuilder: itemBuilder,
+    onSelected: (key) {
+        setState(() {
+            selectedOption = key;
+        });
+        return null;
+    },
+),
+```
+
+
+# Limitations and known issues
+
+
+- The overlay is always shown below the widget. Meaning that it is possible that the overlay is rendered partially outside the screen if the combobox is too close to the end of the screen.
+
+- Currently, the overlay shadow and the animation configuration is not customizable.

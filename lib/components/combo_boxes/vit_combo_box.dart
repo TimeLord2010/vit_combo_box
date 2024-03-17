@@ -25,6 +25,7 @@ class VitComboBox<T> extends StatefulWidget {
     this.optionsBuilder,
     this.onClose,
     this.optionsContainerHeight = 150,
+    this.trailing,
   }) {
     assert(
       optionsBuilder != null || itemBuilder != null,
@@ -103,6 +104,9 @@ class VitComboBox<T> extends StatefulWidget {
 
   /// Invoked when the overlay is closed.
   final void Function()? onClose;
+
+  /// The widget shown at the end of the widget.
+  final Widget? trailing;
 
   @override
   State<VitComboBox> createState() => _VitComboBoxState<T>();
@@ -185,9 +189,10 @@ class _VitComboBoxState<T> extends State<VitComboBox<T>> {
                 Expanded(
                   child: getSelection(),
                 ),
-                const VitAssetIcon(
-                  asset: 'expand',
-                ),
+                widget.trailing ??
+                    const VitAssetIcon(
+                      asset: 'expand',
+                    ),
               ],
             ),
           ),
