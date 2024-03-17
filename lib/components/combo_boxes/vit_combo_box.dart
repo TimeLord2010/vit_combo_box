@@ -23,6 +23,7 @@ class VitComboBox<T> extends StatefulWidget {
     this.height,
     this.enabled = true,
     this.optionsBuilder,
+    this.onClose,
     this.optionsContainerHeight = 150,
   }) {
     assert(
@@ -100,6 +101,9 @@ class VitComboBox<T> extends StatefulWidget {
   /// If [optionsBuilder] is given, then this parameter must not be provided.
   final FutureOr<bool?> Function(T key)? onSelected;
 
+  /// Invoked when the overlay is closed.
+  final void Function()? onClose;
+
   @override
   State<VitComboBox> createState() => _VitComboBoxState<T>();
 }
@@ -113,21 +117,35 @@ class _VitComboBoxState<T> extends State<VitComboBox<T>> {
       builder: (context) {
         var position = getWidgetPosition(_widgetKey);
         var size = getWidgetSize(_widgetKey);
-        return Stack(
-          children: [
-            Positioned.fill(
-              child: VitButton(
-                onPressed: () => entry?.remove(),
-                child: Container(color: black.withOpacity(0.01)),
+
+        Widget build() {
+          return Stack(
+            children: [
+              Positioned.fill(
+                child: VitButton(
+                  onPressed: () {
+                    entry?.remove();
+                    var onClose = widget.onClose;
+                    if (onClose != null) onClose();
+                  },
+                  child: Container(color: black.withOpacity(0.01)),
+                ),
               ),
-            ),
-            Positioned(
-              left: position.dx,
-              top: position.dy + size.height + 2,
-              width: size.width,
-              child: _optionsContainer(),
-            ),
-          ],
+              Positioned(
+                left: position.dx,
+                top: position.dy + size.height + 2,
+                width: size.width,
+                child: _optionsContainer(),
+              ),
+            ],
+          );
+        }
+
+        return Material(
+          type: MaterialType.transparency,
+          child: Builder(
+            builder: (context) => build(),
+          ),
         );
       },
     );
@@ -235,6 +253,8 @@ class _VitComboBoxState<T> extends State<VitComboBox<T>> {
               return;
             }
             entry?.remove();
+            var onClose = widget.onClose;
+            if (onClose != null) onClose();
           },
           child: Padding(
             padding: const EdgeInsets.all(6),

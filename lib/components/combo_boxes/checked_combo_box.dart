@@ -1,6 +1,8 @@
-import 'package:flutter/widgets.dart';
+import 'package:flutter/material.dart';
 import 'package:vit_combo_box/components/combo_boxes/vit_combo_box.dart';
+import 'package:vit_combo_box/components/vit_button.dart';
 import 'package:vit_combo_box/components/vit_check_box.dart';
+import 'package:vit_combo_box/extensions/iterable_extension.dart';
 
 /// A combo box with checked boxes at the left of each item.
 ///
@@ -14,14 +16,20 @@ class CheckedComboBox<T> extends StatelessWidget {
     this.onSelected,
     this.label,
     this.enabled = true,
+    this.selectionBuilder,
+    this.onClose,
+    this.renderCheckBox,
   });
 
   final Set<T> options;
   final Set<T> selectedItems;
   final String? label;
   final bool enabled;
-  final String Function(T item) itemBuilder;
+  final Widget Function(T item) itemBuilder;
   final void Function(T item, bool selected)? onSelected;
+  final Widget Function()? selectionBuilder;
+  final Widget Function(bool isChecked)? renderCheckBox;
+  final void Function()? onClose;
 
   @override
   Widget build(BuildContext context) {
@@ -29,6 +37,21 @@ class CheckedComboBox<T> extends StatelessWidget {
       label: label,
       options: options,
       enabled: enabled,
+      onClose: onClose,
+      selectedItemBuilder: (_) {
+        var builder = selectionBuilder;
+        if (builder == null) {
+          return Wrap(
+            children: selectedItems
+                .map((x) {
+                  return itemBuilder(x);
+                })
+                .separatedBy(const Text(', '))
+                .toList(),
+          );
+        }
+        return builder();
+      },
       optionsBuilder: (options) {
         return StatefulBuilder(
           builder: (context, setState) {
@@ -59,12 +82,42 @@ class CheckedComboBox<T> extends StatelessWidget {
     return ListView.builder(
       itemBuilder: (context, index) {
         var item = options.elementAt(index);
+        var isChecked = selectedItems.contains(item);
+        onChecked(bool value) => onSelection(item, value);
+
+        Widget buildCheckBox() {
+          if (renderCheckBox == null) {
+            return VitCheckBox(
+              isChecked: isChecked,
+              onChecked: onChecked,
+            );
+          }
+          return renderCheckBox!(isChecked);
+        }
+
         return Padding(
           padding: const EdgeInsets.all(8.0),
-          child: VitCheckBox(
-            isChecked: selectedItems.contains(item),
-            onChecked: (value) => onSelection(item, value),
-            label: itemBuilder(item),
+          child: VitButton(
+            onPressed: () => onChecked(!isChecked),
+            child: Row(
+              mainAxisSize: MainAxisSize.min,
+              children: [
+                Stack(
+                  children: [
+                    buildCheckBox(),
+                    Positioned.fill(
+                      child: Material(
+                        color: Colors.transparent,
+                        child: GestureDetector(
+                          onTap: () => onChecked(!isChecked),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+                itemBuilder(item),
+              ],
+            ),
           ),
         );
       },

@@ -20,6 +20,8 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+  DateTime? selectedDate;
+  Set<DateTime> selectedDates = {};
   @override
   void initState() {
     super.initState();
@@ -27,22 +29,57 @@ class _MyAppState extends State<MyApp> {
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      children: [
-        VitComboBox(
-          options: List.generate(20, (index) {
-            return DateTime(2000 + index);
-          }).toSet(),
-          selection: DateTime(2000),
-          itemBuilder: (item) {
-            return Text('Year ${item.year}');
-          },
-          onSelected: (key) {
-            return null;
-          },
-          label: 'Date',
-        ),
-      ],
+    var set = List.generate(20, (index) {
+      return DateTime(2000 + index);
+    }).toSet();
+    itemBuilder(DateTime item) => Text('Year ${item.year}');
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Column(
+        children: [
+          // Regular combo box
+          VitComboBox(
+            options: set,
+            selection: selectedDate,
+            itemBuilder: itemBuilder,
+            onSelected: (key) {
+              setState(() {
+                selectedDate = key;
+              });
+              return null;
+            },
+            label: 'Date',
+          ),
+
+          const SizedBox(height: 20),
+
+          // Combo box with check boxes.
+          CheckedComboBox<DateTime>(
+            options: set,
+            itemBuilder: (item) {
+              return Text('Year ${item.year}');
+            },
+            selectedItems: selectedDates,
+            onSelected: (item, selected) {
+              if (selected) {
+                selectedDates.add(item);
+              } else {
+                selectedDates.remove(item);
+              }
+            },
+            onClose: () {
+              setState(() {});
+            },
+            label: 'Combo box with check boxes',
+          ),
+
+          const SizedBox(height: 20),
+
+          FutureComboBox.eternal(
+            label: 'Combo box that needs to load some data',
+          ),
+        ],
+      ),
     );
   }
 }
