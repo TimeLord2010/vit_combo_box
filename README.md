@@ -8,6 +8,13 @@ This project focus on providing the three widgets:
 
 Every implementation is focused on providing the maximum customizability. Meaning that the widget can look however you want, so it fits with your design language.
 
+<img width="571" alt="Screenshot 2024-03-22 at 14 29 00" src="https://github.com/TimeLord2010/vit_combo_box/assets/50129092/3181fb60-6e6f-4e7f-bfe7-b845f4ac1027">
+
+<img width="571" alt="Screenshot 2024-03-22 at 14 29 09" src="https://github.com/TimeLord2010/vit_combo_box/assets/50129092/faaad685-d7fc-42ec-81b0-f28df9e717e0">
+
+<img width="573" alt="Screenshot 2024-03-22 at 14 29 21" src="https://github.com/TimeLord2010/vit_combo_box/assets/50129092/8ed3aa86-71ba-4c4d-9499-6cd781a381d5">
+
+
 # Usage
 
 ```dart
