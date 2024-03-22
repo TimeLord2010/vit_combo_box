@@ -5,6 +5,7 @@ import 'package:vit_combo_box/components/vit_asset_icon.dart';
 import 'package:vit_combo_box/components/vit_button.dart';
 import 'package:vit_combo_box/components/vit_text.dart';
 import 'package:vit_combo_box/theme/colors.dart';
+import 'package:vit_combo_box/theme/decorations.dart';
 import 'package:vit_combo_box/usecases/get_widget_position_by_key.dart';
 import 'package:vit_combo_box/usecases/get_widget_size_by_key.dart';
 
@@ -26,6 +27,8 @@ class VitComboBox<T> extends StatefulWidget {
     this.onClose,
     this.optionsContainerHeight = 150,
     this.trailing,
+    this.labelStyle,
+    this.overlayDecorationBuilder,
   }) {
     assert(
       optionsBuilder != null || itemBuilder != null,
@@ -41,31 +44,12 @@ class VitComboBox<T> extends StatefulWidget {
     );
   }
 
-  factory VitComboBox.chip({
-    required Set<T> options,
-    required Widget Function(T item) itemBuilder,
-    required FutureOr<bool?> Function(T key) onSelected,
-    String? label,
-    T? selection,
-    double? height,
-  }) {
-    return VitComboBox(
-      label: label,
-      options: options,
-      itemBuilder: itemBuilder,
-      selection: selection,
-      onSelected: onSelected,
-      height: height,
-      decoration: BoxDecoration(
-        color: const Color.fromARGB(255, 230, 230, 230),
-        borderRadius: BorderRadius.circular(32),
-      ),
-    );
-  }
-
   /// The text displayed above it so indicate to the user with field this
   /// component belongs to
   final String? label;
+
+  /// The style of the [label].
+  final TextStyle? labelStyle;
 
   /// The current item selected between [options].
   final T? selection;
@@ -85,6 +69,9 @@ class VitComboBox<T> extends StatefulWidget {
 
   /// The decoration for the container of the widget
   final BoxDecoration? decoration;
+
+  /// The decoration of the overlay container displayed onTap.
+  final BoxDecoration Function(double height)? overlayDecorationBuilder;
 
   /// Optional parameter to build a custom layout when the widget is selected.
   final Widget Function(Set<T> options)? optionsBuilder;
@@ -169,9 +156,10 @@ class _VitComboBoxState<T> extends State<VitComboBox<T>> {
           if (label != null)
             VitText(
               label,
-              style: TextStyle(
-                color: enabled ? black : black.withOpacity(0.4),
-              ),
+              style: widget.labelStyle ??
+                  TextStyle(
+                    color: enabled ? black : black.withOpacity(0.4),
+                  ),
             ),
           Container(
             key: _widgetKey,
@@ -207,23 +195,18 @@ class _VitComboBoxState<T> extends State<VitComboBox<T>> {
       tween: Tween<double>(begin: 20.0, end: widget.optionsContainerHeight),
       curve: Curves.decelerate,
       duration: const Duration(milliseconds: 250),
-      builder: (context, value, child) {
+      builder: (context, height, child) {
+        var decorationBuilder = widget.overlayDecorationBuilder;
+        BoxDecoration getDecoration() {
+          if (decorationBuilder == null) return defaultOverlayDecoration;
+          return decorationBuilder(height);
+        }
+
         return Container(
           constraints: BoxConstraints(
-            maxHeight: value,
+            maxHeight: height,
           ),
-          decoration: BoxDecoration(
-            color: const Color.fromARGB(255, 255, 255, 255),
-            borderRadius: BorderRadius.circular(3),
-            boxShadow: [
-              BoxShadow(
-                spreadRadius: 3,
-                offset: const Offset(2, 2),
-                color: black.withOpacity(0.2),
-                blurRadius: 4,
-              ),
-            ],
-          ),
+          decoration: getDecoration(),
           child: child,
         );
       },

@@ -10,11 +10,12 @@ class FutureComboBox<T> extends StatelessWidget {
   const FutureComboBox({
     super.key,
     required this.options,
-    required this.builder,
+    required this.itemBuilder,
     required this.onSelected,
     this.onError,
     this.label,
     this.loaderBuilder,
+    this.labelStyle,
   });
 
   factory FutureComboBox.eternal({String? label, Widget Function()? loaderBuilder}) {
@@ -24,7 +25,7 @@ class FutureComboBox<T> extends StatelessWidget {
       options: Future.delayed(const Duration(days: 1), () {
         return {};
       }),
-      builder: (item) {
+      itemBuilder: (item) {
         throw Exception('Tried to render item in eternal future combo box');
       },
       onSelected: (item) => null,
@@ -34,9 +35,10 @@ class FutureComboBox<T> extends StatelessWidget {
   final Future<Set<T>> options;
   final String? label;
   final Widget Function(Object error)? onError;
-  final Widget Function(T item) builder;
+  final Widget Function(T item) itemBuilder;
   final Widget Function()? loaderBuilder;
   final FutureOr<bool?> Function(T item) onSelected;
+  final TextStyle? labelStyle;
 
   @override
   Widget build(BuildContext context) {
@@ -67,6 +69,7 @@ class FutureComboBox<T> extends StatelessWidget {
       onSelected: (key) => null,
       selection: false,
       label: label,
+      labelStyle: labelStyle,
     );
   }
 
@@ -82,8 +85,9 @@ class FutureComboBox<T> extends StatelessWidget {
       return VitComboBox(
         label: label,
         options: items,
-        itemBuilder: builder,
+        itemBuilder: itemBuilder,
         onSelected: onSelected,
+        labelStyle: labelStyle,
       );
     }
     throw StateError('Either items or error must not be null');

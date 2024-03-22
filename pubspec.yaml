@@ -1,6 +1,6 @@
 name: vit_combo_box
 description: "A collection of very flexible ComboBoxes/Dropdrop."
-version: 1.0.0
+version: 1.1.0
 repository: https://github.com/TimeLord2010/vit_combo_box
 
 environment:
@@ -17,10 +17,6 @@ dev_dependencies:
   flutter_lints: ^3.0.0
 
 flutter:
-  plugin:
-    platforms:
-      some_platform:
-        pluginClass: somePluginClass
 
   assets:
     - packages/vit_combo_box/assets/expand.webp

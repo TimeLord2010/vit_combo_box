@@ -19,12 +19,16 @@ class CheckedComboBox<T> extends StatelessWidget {
     this.selectionBuilder,
     this.onClose,
     this.renderCheckBox,
+    this.labelStyle,
+    this.overlayDecorationBuilder,
   });
 
   final Set<T> options;
   final Set<T> selectedItems;
   final String? label;
+  final TextStyle? labelStyle;
   final bool enabled;
+  final BoxDecoration Function(double height)? overlayDecorationBuilder;
   final Widget Function(T item) itemBuilder;
   final void Function(T item, bool selected)? onSelected;
   final Widget Function()? selectionBuilder;
@@ -35,9 +39,11 @@ class CheckedComboBox<T> extends StatelessWidget {
   Widget build(BuildContext context) {
     return VitComboBox(
       label: label,
+      labelStyle: labelStyle,
       options: options,
       enabled: enabled,
       onClose: onClose,
+      overlayDecorationBuilder: overlayDecorationBuilder,
       selectedItemBuilder: (_) {
         var builder = selectionBuilder;
         if (builder == null) {

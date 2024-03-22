@@ -76,7 +76,7 @@ class _MyAppState extends State<MyApp> {
           const SizedBox(height: 20),
 
           FutureComboBox.eternal(
-            label: 'Combo box that needs to load some data [ It never gets them :( ]',
+            label: 'Combo box that needs to load some data [ It never gets them 😔 ]',
           ),
         ],
       ),
