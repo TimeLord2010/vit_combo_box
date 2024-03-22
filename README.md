@@ -31,5 +31,3 @@ VitComboBox(
 
 
 - The overlay is always shown below the widget. Meaning that it is possible that the overlay is rendered partially outside the screen if the combobox is too close to the end of the screen.
-
-- Currently, the overlay shadow and the animation configuration is not customizable.
