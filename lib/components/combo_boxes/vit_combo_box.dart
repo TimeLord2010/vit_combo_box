@@ -128,12 +128,10 @@ class _VitComboBoxState<T> extends State<VitComboBox<T>> {
   }
 
   void onPressed() {
-    var ctx = context;
-
     entry = OverlayEntry(
       builder: (context) {
         var position = getWidgetPosition(
-          context: ctx,
+          key: _widgetKey,
           parent: _getParent(),
         );
         var size = getWidgetSize(_widgetKey);

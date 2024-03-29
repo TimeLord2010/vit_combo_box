@@ -1,3 +1,7 @@
+## 2.1.1
+
+* Fixed the options container position.
+
 ## 2.1.0
 
 * Added `optionsOffset` and `getParentRenderBox` fields to combo box constructors;
