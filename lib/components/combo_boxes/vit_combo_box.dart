@@ -6,7 +6,7 @@ import 'package:vit_combo_box/components/vit_button.dart';
 import 'package:vit_combo_box/components/vit_text.dart';
 import 'package:vit_combo_box/theme/colors.dart';
 import 'package:vit_combo_box/theme/decorations.dart';
-import 'package:vit_combo_box/usecases/get_widget_position_by_key.dart';
+import 'package:vit_combo_box/usecases/get_widget_position.dart';
 import 'package:vit_combo_box/usecases/get_widget_size_by_key.dart';
 
 /// A widget similar to a text box, but on tap, a overlay of options is shown
@@ -22,13 +22,15 @@ class VitComboBox<T> extends StatefulWidget {
     this.selectedItemBuilder,
     this.decoration,
     this.height,
-    this.enabled = true,
     this.optionsBuilder,
     this.onClose,
-    this.optionsContainerHeight = 150,
     this.trailing,
     this.labelStyle,
+    this.optionsOffset,
     this.overlayDecorationBuilder,
+    this.getParentRenderBox,
+    this.enabled = true,
+    this.optionsContainerHeight,
   }) {
     assert(
       optionsBuilder != null || itemBuilder != null,
@@ -62,7 +64,7 @@ class VitComboBox<T> extends StatefulWidget {
 
   /// The height of the options container displayed when the user selects the
   /// widget.
-  final double optionsContainerHeight;
+  final double? optionsContainerHeight;
 
   /// Indicates to the user whether the widget is interactiable or not.
   final bool enabled;
@@ -95,6 +97,20 @@ class VitComboBox<T> extends StatefulWidget {
   /// The widget shown at the end of the widget.
   final Widget? trailing;
 
+  /// The offset used to adjust the position of the options overlay.
+  final Offset? optionsOffset;
+
+  /// Used to calculate the options overlay position.
+  ///
+  /// This is useful if the widget tree can multiple MaterialApp widgets.
+  /// In that case, the position is not calculated correctly by itself.
+  ///
+  /// One option, could be to get the RenderBox of Scaffold:
+  /// ```dart
+  /// var parent = Scaffold.of(context).context.findRenderObject() as RenderBox;
+  /// ```
+  final RenderBox? Function()? getParentRenderBox;
+
   @override
   State<VitComboBox> createState() => _VitComboBoxState<T>();
 }
@@ -103,11 +119,29 @@ class _VitComboBoxState<T> extends State<VitComboBox<T>> {
   final GlobalKey _widgetKey = GlobalKey();
   OverlayEntry? entry;
 
+  RenderBox? _getParent() {
+    var func = widget.getParentRenderBox;
+    if (func != null) {
+      return func();
+    }
+    return null;
+  }
+
   void onPressed() {
+    var ctx = context;
+
     entry = OverlayEntry(
       builder: (context) {
-        var position = getWidgetPosition(_widgetKey);
+        var position = getWidgetPosition(
+          context: ctx,
+          parent: _getParent(),
+        );
         var size = getWidgetSize(_widgetKey);
+
+        var offset = widget.optionsOffset;
+        if (offset != null) {
+          position += offset;
+        }
 
         Widget build() {
           return Stack(
@@ -192,7 +226,10 @@ class _VitComboBoxState<T> extends State<VitComboBox<T>> {
   /// Displays the options in contaner where the height is animated.
   Widget _optionsContainer() {
     return TweenAnimationBuilder(
-      tween: Tween<double>(begin: 20.0, end: widget.optionsContainerHeight),
+      tween: Tween<double>(
+        begin: 20.0,
+        end: widget.optionsContainerHeight ?? 150,
+      ),
       curve: Curves.decelerate,
       duration: const Duration(milliseconds: 250),
       builder: (context, height, child) {

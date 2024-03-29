@@ -16,12 +16,24 @@ class FutureComboBox<T> extends StatelessWidget {
     this.label,
     this.loaderBuilder,
     this.labelStyle,
+    this.decoration,
+    this.optionsOffset,
+    this.getParentRenderBox,
   });
 
-  factory FutureComboBox.eternal({String? label, Widget Function()? loaderBuilder}) {
+  factory FutureComboBox.eternal({
+    String? label,
+    Widget Function()? loaderBuilder,
+    BoxDecoration? decoration,
+    Offset? optionsOffset,
+    RenderBox? Function()? getParentRenderBox,
+  }) {
     return FutureComboBox(
       label: label,
       loaderBuilder: loaderBuilder,
+      decoration: decoration,
+      optionsOffset: optionsOffset,
+      getParentRenderBox: getParentRenderBox,
       options: Future.delayed(const Duration(days: 1), () {
         return {};
       }),
@@ -39,6 +51,9 @@ class FutureComboBox<T> extends StatelessWidget {
   final Widget Function()? loaderBuilder;
   final FutureOr<bool?> Function(T item) onSelected;
   final TextStyle? labelStyle;
+  final BoxDecoration? decoration;
+  final Offset? optionsOffset;
+  final RenderBox? Function()? getParentRenderBox;
 
   @override
   Widget build(BuildContext context) {
@@ -58,6 +73,9 @@ class FutureComboBox<T> extends StatelessWidget {
   VitComboBox<bool> _renderLoading() {
     return VitComboBox<bool>(
       options: const {false},
+      decoration: decoration,
+      optionsOffset: optionsOffset,
+      getParentRenderBox: getParentRenderBox,
       itemBuilder: (item) {
         if (loaderBuilder != null) {
           return loaderBuilder!();
@@ -88,6 +106,9 @@ class FutureComboBox<T> extends StatelessWidget {
         itemBuilder: itemBuilder,
         onSelected: onSelected,
         labelStyle: labelStyle,
+        decoration: decoration,
+        optionsOffset: optionsOffset,
+        getParentRenderBox: getParentRenderBox,
       );
     }
     throw StateError('Either items or error must not be null');

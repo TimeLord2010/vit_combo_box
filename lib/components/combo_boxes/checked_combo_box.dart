@@ -21,6 +21,11 @@ class CheckedComboBox<T> extends StatelessWidget {
     this.renderCheckBox,
     this.labelStyle,
     this.overlayDecorationBuilder,
+    this.getParentRenderBox,
+    this.optionsOffset,
+    this.height,
+    this.decoration,
+    this.optionsContainerHeight,
   });
 
   final Set<T> options;
@@ -34,6 +39,11 @@ class CheckedComboBox<T> extends StatelessWidget {
   final Widget Function()? selectionBuilder;
   final Widget Function(bool isChecked)? renderCheckBox;
   final void Function()? onClose;
+  final Offset? optionsOffset;
+  final RenderBox? Function()? getParentRenderBox;
+  final double? height;
+  final BoxDecoration? decoration;
+  final double? optionsContainerHeight;
 
   @override
   Widget build(BuildContext context) {
@@ -43,7 +53,12 @@ class CheckedComboBox<T> extends StatelessWidget {
       options: options,
       enabled: enabled,
       onClose: onClose,
+      height: height,
+      decoration: decoration,
       overlayDecorationBuilder: overlayDecorationBuilder,
+      getParentRenderBox: getParentRenderBox,
+      optionsOffset: optionsOffset,
+      optionsContainerHeight: optionsContainerHeight,
       selectedItemBuilder: (_) {
         var builder = selectionBuilder;
         if (builder == null) {

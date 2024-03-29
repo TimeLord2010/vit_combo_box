@@ -1,3 +1,7 @@
+## 2.1.0
+
+* Added `optionsOffset` and `getParentRenderBox` fields to combo box constructors;
+
 ## 2.0.1
 
 * Updated README.md.
