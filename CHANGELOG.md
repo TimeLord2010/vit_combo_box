@@ -1,3 +1,9 @@
+## 3.0.0
+
+* [BREAKING] `getParentRenderBox` was renamed to `parentRenderBoxGetter`.
+* Added `VitComboBoxTheme`.
+* The expand icon now is gray when `enabled` is false.
+
 ## 2.1.1
 
 * Fixed the options container position.

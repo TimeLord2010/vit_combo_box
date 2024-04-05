@@ -21,7 +21,7 @@ class CheckedComboBox<T> extends StatelessWidget {
     this.renderCheckBox,
     this.labelStyle,
     this.overlayDecorationBuilder,
-    this.getParentRenderBox,
+    this.parentRenderBoxGetter,
     this.optionsOffset,
     this.height,
     this.decoration,
@@ -40,7 +40,7 @@ class CheckedComboBox<T> extends StatelessWidget {
   final Widget Function(bool isChecked)? renderCheckBox;
   final void Function()? onClose;
   final Offset? optionsOffset;
-  final RenderBox? Function()? getParentRenderBox;
+  final RenderBox? Function()? parentRenderBoxGetter;
   final double? height;
   final BoxDecoration? decoration;
   final double? optionsContainerHeight;
@@ -56,7 +56,7 @@ class CheckedComboBox<T> extends StatelessWidget {
       height: height,
       decoration: decoration,
       overlayDecorationBuilder: overlayDecorationBuilder,
-      getParentRenderBox: getParentRenderBox,
+      parentRenderBoxGetter: parentRenderBoxGetter,
       optionsOffset: optionsOffset,
       optionsContainerHeight: optionsContainerHeight,
       selectedItemBuilder: (_) {

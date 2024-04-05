@@ -53,6 +53,42 @@ class _MyAppState extends State<MyApp> {
 
           const SizedBox(height: 20),
 
+          VitComboBox(
+            options: set,
+            selection: selectedDate,
+            itemBuilder: itemBuilder,
+            onSelected: (key) {
+              setState(() {
+                selectedDate = key;
+              });
+              return null;
+            },
+            enabled: false,
+            label: 'Disabled',
+          ),
+
+          const SizedBox(height: 20),
+
+          VitComboBoxTheme(
+            data: VitComboBoxThemeData(
+              decoration: BoxDecoration(
+                color: Colors.purple.shade100,
+              ),
+            ),
+            child: VitComboBox(
+              options: const {true, false},
+              label: 'With decoration from theme',
+              itemBuilder: (item) {
+                return Text(item.toString());
+              },
+              onSelected: (key) {
+                return null;
+              },
+            ),
+          ),
+
+          const SizedBox(height: 20),
+
           // Combo box with check boxes.
           CheckedComboBox<DateTime>(
             options: set,

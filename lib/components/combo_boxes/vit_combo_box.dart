@@ -6,6 +6,7 @@ import 'package:vit_combo_box/components/vit_button.dart';
 import 'package:vit_combo_box/components/vit_text.dart';
 import 'package:vit_combo_box/theme/colors.dart';
 import 'package:vit_combo_box/theme/decorations.dart';
+import 'package:vit_combo_box/theme/vit_combo_box_theme.dart';
 import 'package:vit_combo_box/usecases/get_widget_position.dart';
 import 'package:vit_combo_box/usecases/get_widget_size_by_key.dart';
 
@@ -28,7 +29,7 @@ class VitComboBox<T> extends StatefulWidget {
     this.labelStyle,
     this.optionsOffset,
     this.overlayDecorationBuilder,
-    this.getParentRenderBox,
+    this.parentRenderBoxGetter,
     this.enabled = true,
     this.optionsContainerHeight,
   }) {
@@ -42,7 +43,7 @@ class VitComboBox<T> extends StatefulWidget {
     );
     assert(
       itemBuilder == null || onSelected != null,
-      'If itemBuilder is give, then onSelected must be also given',
+      'If itemBuilder is given, then onSelected must be also given',
     );
   }
 
@@ -109,7 +110,7 @@ class VitComboBox<T> extends StatefulWidget {
   /// ```dart
   /// var parent = Scaffold.of(context).context.findRenderObject() as RenderBox;
   /// ```
-  final RenderBox? Function()? getParentRenderBox;
+  final RenderBox? Function()? parentRenderBoxGetter;
 
   @override
   State<VitComboBox> createState() => _VitComboBoxState<T>();
@@ -120,9 +121,13 @@ class _VitComboBoxState<T> extends State<VitComboBox<T>> {
   OverlayEntry? entry;
 
   RenderBox? _getParent() {
-    var func = widget.getParentRenderBox;
+    var func = widget.parentRenderBoxGetter;
     if (func != null) {
       return func();
+    }
+    var theme = VitComboBoxTheme.maybeOf(context);
+    if (theme?.parentRenderBoxGetter != null) {
+      return theme!.parentRenderBoxGetter!();
     }
     return null;
   }
@@ -196,12 +201,7 @@ class _VitComboBoxState<T> extends State<VitComboBox<T>> {
           Container(
             key: _widgetKey,
             height: widget.height ?? 32,
-            decoration: widget.decoration ??
-                BoxDecoration(
-                  color: enabled ? white : disabledFieldBackground,
-                  border: Border.all(color: gray2),
-                  borderRadius: BorderRadius.circular(4),
-                ),
+            decoration: _getDecoration(),
             padding: const EdgeInsets.fromLTRB(8, 4, 4, 4),
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.center,
@@ -209,15 +209,40 @@ class _VitComboBoxState<T> extends State<VitComboBox<T>> {
                 Expanded(
                   child: getSelection(),
                 ),
-                widget.trailing ??
-                    const VitAssetIcon(
-                      asset: 'expand',
-                    ),
+                widget.trailing ?? _getDefaultSuffix(),
               ],
             ),
           ),
         ],
       ),
+    );
+  }
+
+  BoxDecoration _getDecoration() {
+    // Instance decoration
+    if (widget.decoration != null) {
+      return widget.decoration!;
+    }
+
+    // Theme decoration
+    var theme = VitComboBoxTheme.maybeOf(context);
+    if (theme != null && theme.decoration != null) {
+      return theme.decoration!;
+    }
+
+    // Default decoration
+    var enabled = widget.enabled;
+    return BoxDecoration(
+      color: enabled ? white : disabledFieldBackground,
+      border: Border.all(color: gray2),
+      borderRadius: BorderRadius.circular(4),
+    );
+  }
+
+  VitAssetIcon _getDefaultSuffix() {
+    return VitAssetIcon(
+      asset: 'expand',
+      color: widget.enabled ? null : const Color.fromARGB(255, 135, 135, 135),
     );
   }
 
