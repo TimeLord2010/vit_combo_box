@@ -110,7 +110,7 @@ class VitComboBox<T> extends StatefulWidget {
   /// ```dart
   /// var parent = Scaffold.of(context).context.findRenderObject() as RenderBox;
   /// ```
-  final RenderBox? Function()? parentRenderBoxGetter;
+  final RenderBox? Function(BuildContext context)? parentRenderBoxGetter;
 
   @override
   State<VitComboBox> createState() => _VitComboBoxState<T>();
@@ -123,11 +123,11 @@ class _VitComboBoxState<T> extends State<VitComboBox<T>> {
   RenderBox? _getParent() {
     var func = widget.parentRenderBoxGetter;
     if (func != null) {
-      return func();
+      return func(context);
     }
     var theme = VitComboBoxTheme.maybeOf(context);
     if (theme?.parentRenderBoxGetter != null) {
-      return theme!.parentRenderBoxGetter!();
+      return theme!.parentRenderBoxGetter!(context);
     }
     return null;
   }

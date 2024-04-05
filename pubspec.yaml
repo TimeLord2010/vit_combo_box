@@ -1,6 +1,6 @@
 name: vit_combo_box
 description: "A collection of very flexible ComboBoxes/Dropdrop."
-version: 3.0.0
+version: 3.0.1
 repository: https://github.com/TimeLord2010/vit_combo_box
 
 environment:

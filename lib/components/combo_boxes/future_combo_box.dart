@@ -26,7 +26,7 @@ class FutureComboBox<T> extends StatelessWidget {
     Widget Function()? loaderBuilder,
     BoxDecoration? decoration,
     Offset? optionsOffset,
-    RenderBox? Function()? parentRenderBoxGetter,
+    RenderBox? Function(BuildContext context)? parentRenderBoxGetter,
   }) {
     return FutureComboBox(
       label: label,
@@ -53,7 +53,7 @@ class FutureComboBox<T> extends StatelessWidget {
   final TextStyle? labelStyle;
   final BoxDecoration? decoration;
   final Offset? optionsOffset;
-  final RenderBox? Function()? parentRenderBoxGetter;
+  final RenderBox? Function(BuildContext context)? parentRenderBoxGetter;
 
   @override
   Widget build(BuildContext context) {

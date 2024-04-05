@@ -1,3 +1,7 @@
+## 3.0.1
+
+* Feat: `parentRenderBoxGetter` now has the BuilContext in its parameters.
+
 ## 3.0.0
 
 * [BREAKING] `getParentRenderBox` was renamed to `parentRenderBoxGetter`.

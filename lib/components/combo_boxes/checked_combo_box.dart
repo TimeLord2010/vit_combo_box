@@ -40,7 +40,7 @@ class CheckedComboBox<T> extends StatelessWidget {
   final Widget Function(bool isChecked)? renderCheckBox;
   final void Function()? onClose;
   final Offset? optionsOffset;
-  final RenderBox? Function()? parentRenderBoxGetter;
+  final RenderBox? Function(BuildContext context)? parentRenderBoxGetter;
   final double? height;
   final BoxDecoration? decoration;
   final double? optionsContainerHeight;
