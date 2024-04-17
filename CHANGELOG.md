@@ -1,6 +1,10 @@
+## 3.1.0
+
+* Added `labelStyle` to `VitComboBoxThemeData`.
+
 ## 3.0.1
 
-* Feat: `parentRenderBoxGetter` now has the BuilContext in its parameters.
+* `parentRenderBoxGetter` now has the BuilContext in its parameters.
 
 ## 3.0.0
 

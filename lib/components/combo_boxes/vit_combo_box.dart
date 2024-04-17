@@ -190,14 +190,10 @@ class _VitComboBoxState<T> extends State<VitComboBox<T>> {
         crossAxisAlignment: CrossAxisAlignment.start,
         mainAxisSize: MainAxisSize.min,
         children: [
-          if (label != null)
-            VitText(
-              label,
-              style: widget.labelStyle ??
-                  TextStyle(
-                    color: enabled ? black : black.withOpacity(0.4),
-                  ),
-            ),
+          // Label
+          if (label != null) VitText(label, style: _labelStyle()),
+
+          // Combobox
           Container(
             key: _widgetKey,
             height: widget.height ?? 32,
@@ -215,6 +211,24 @@ class _VitComboBoxState<T> extends State<VitComboBox<T>> {
           ),
         ],
       ),
+    );
+  }
+
+  TextStyle _labelStyle() {
+    final enabled = widget.enabled;
+
+    // Instance style
+    if (widget.labelStyle != null) return widget.labelStyle!;
+
+    // Theme style
+    var theme = VitComboBoxTheme.maybeOf(context);
+    if (theme != null && theme.labelStyle != null) {
+      return theme.labelStyle!;
+    }
+
+    // Default style
+    return TextStyle(
+      color: enabled ? black : black.withOpacity(0.4),
     );
   }
 
