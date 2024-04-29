@@ -1,4 +1,15 @@
 include: package:flutter_lints/flutter.yaml
 
-# Additional information about this file can be found at
-# https://dart.dev/guides/language/analysis-options
+linter:
+  rules:
+    - avoid_unused_constructor_parameters
+    - cascade_invocations
+    - literal_only_boolean_expressions
+    - unnecessary_statements
+    - avoid_bool_literals_in_conditional_expressions
+    - package_api_docs
+    - public_member_api_docs
+    - unnecessary_breaks
+    - unnecessary_final
+    - unnecessary_null_aware_operator_on_extension_on_nullable
+    - use_named_constants

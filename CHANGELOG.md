@@ -1,9 +1,14 @@
+## 4.0.1
+
+* Added documentation to various elements.
+
 ## 4.0.0
 
 * [BREAKING] Reworked `VitComboBox` base class contructor into named constructors `.rawBuilder` and `.itemBuilder`.
 * [BREAKING] Style related properties from all combo boxes were refactored and grouped inside `VitComboBoxStyle` to improve reuse and and readability.
 * Fixed a bug where `CheckedComboBox` only updated its selection when the option overlay was closed.
 * Added property `padding` to options style class `OptionsStyle`.
+
 
 ## 3.1.0
 

@@ -72,12 +72,10 @@ class _MyAppState extends State<MyApp> {
           const SizedBox(height: 20),
 
           VitComboBoxTheme(
-            data: VitComboBoxThemeData(
-              style: VitComboBoxStyle(
-                comboBox: ComboBoxStyle(
-                  decoration: BoxDecoration(
-                    color: Colors.purple.shade100,
-                  ),
+            data: VitComboBoxStyle(
+              comboBox: ComboBoxStyle(
+                decoration: BoxDecoration(
+                  color: Colors.purple.shade100,
                 ),
               ),
             ),

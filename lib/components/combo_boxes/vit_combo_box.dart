@@ -47,6 +47,8 @@ class VitComboBox<T> extends StatefulWidget {
     );
   }
 
+  /// Creates a combobox with a custom option overlay by providing
+  /// [optionsBuilder].
   factory VitComboBox.rawBuilder({
     required Widget Function() optionsBuilder,
     Widget Function(T? selection)? selectedItemBuilder,
@@ -61,6 +63,7 @@ class VitComboBox<T> extends StatefulWidget {
       label: label,
       optionsBuilder: optionsBuilder,
       selectedItemBuilder: selectedItemBuilder,
+      onClose: onClose,
       style: style,
       enabled: enabled,
       selection: selection,
@@ -68,6 +71,8 @@ class VitComboBox<T> extends StatefulWidget {
     );
   }
 
+  /// Creates a combobox with option overlay using the [ListView] and
+  /// [itemBuilder].
   factory VitComboBox.itemBuilder({
     required Set<T> options,
     required Widget Function(T item) itemBuilder,
@@ -101,9 +106,10 @@ class VitComboBox<T> extends StatefulWidget {
   /// The current item selected between [options].
   final T? selection;
 
-  /// The options to display to the user
+  /// The options used to create the options overlay.
   final Set<T>? options;
 
+  /// A group of properies relating to the component style.
   final VitComboBoxStyle? style;
 
   /// Indicates to the user whether the widget is interactiable or not.
@@ -141,8 +147,8 @@ class _VitComboBoxState<T> extends State<VitComboBox<T>> {
 
   @override
   Widget build(BuildContext context) {
-    final label = widget.label;
-    final enabled = widget.enabled;
+    var label = widget.label;
+    var enabled = widget.enabled;
     return VitButton(
       onPressed: enabled ? _onPressed : null,
       child: Column(
@@ -227,11 +233,11 @@ class _VitComboBoxState<T> extends State<VitComboBox<T>> {
     if (localStyle != null) return localStyle;
 
     // Theme style
-    var themeStyle = VitComboBoxTheme.maybeOf(context)?.style?.label;
+    var themeStyle = VitComboBoxTheme.maybeOf(context)?.label;
     if (themeStyle != null) return themeStyle;
 
     // Default style
-    final enabled = widget.enabled;
+    var enabled = widget.enabled;
     return TextStyle(
       color: enabled ? black : black.withOpacity(0.4),
     );
@@ -241,7 +247,7 @@ class _VitComboBoxState<T> extends State<VitComboBox<T>> {
     var localStyle = widget.style?.options;
     if (localStyle != null) return localStyle;
 
-    var theme = VitComboBoxTheme.maybeOf(context)?.style?.options;
+    var theme = VitComboBoxTheme.maybeOf(context)?.options;
     if (theme != null) return theme;
 
     return null;
@@ -251,7 +257,7 @@ class _VitComboBoxState<T> extends State<VitComboBox<T>> {
     var localStyle = widget.style?.comboBox;
     if (localStyle != null) return localStyle;
 
-    var themeStyle = VitComboBoxTheme.maybeOf(context)?.style?.comboBox;
+    var themeStyle = VitComboBoxTheme.maybeOf(context)?.comboBox;
     if (themeStyle != null) return themeStyle;
 
     return null;

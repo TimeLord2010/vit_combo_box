@@ -1,5 +1,6 @@
 import 'package:flutter/widgets.dart';
 
+/// The style class used in the options overlay.
 class OptionsStyle {
   /// The height of the options container displayed when the user selects the
   /// widget.
@@ -21,6 +22,7 @@ class OptionsStyle {
   /// animation.
   final BoxDecoration Function(double height)? decorationBuilder;
 
+  /// Creates a instance of the options style class.
   OptionsStyle({
     this.containerHeight,
     this.padding,

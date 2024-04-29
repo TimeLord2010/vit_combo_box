@@ -1,5 +1,9 @@
+// ignore_for_file: public_member_api_docs
+
 import 'package:flutter/widgets.dart';
 
+/// A icon with source file in .webp format and located at
+/// lib/assets/<asset>.webp
 class VitAssetIcon extends StatelessWidget {
   final double? size;
   final String asset;

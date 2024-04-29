@@ -1,3 +1,5 @@
+// ignore_for_file: public_member_api_docs
+
 import 'package:flutter/widgets.dart';
 import 'package:vit_combo_box/components/vit_asset_icon.dart';
 

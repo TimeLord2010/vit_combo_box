@@ -9,6 +9,7 @@ import 'package:vit_combo_box/theme/style/vit_combo_box_style.dart';
 ///
 /// The options overlay does not close when a check box is checked.
 class CheckedComboBox<T> extends StatefulWidget {
+  /// Creates an instance of the checked combo box class.
   const CheckedComboBox({
     super.key,
     required this.options,
@@ -23,15 +24,34 @@ class CheckedComboBox<T> extends StatefulWidget {
     this.style,
   });
 
+  /// The options used to create the options overlay.
   final Set<T> options;
+
+  /// A set of the items currently selected by the combobox overlay.
   final Set<T> selectedItems;
+
+  /// A text displayed at the top of the combo box.
   final String? label;
+
+  /// Whether to allow interaction of the combobox.
   final bool enabled;
+
+  /// Function used to build each item of the option overlay.
   final Widget Function(T item) itemBuilder;
+
+  /// Function called when an item is selected.
   final void Function(T item, bool selected)? onSelected;
+
+  /// The function to build the selected item.
   final Widget Function()? selectionBuilder;
+
+  /// Used to build the checkbox, not including the text.
   final Widget Function(bool isChecked)? renderCheckBox;
+
+  /// Called when the overlay is closed.
   final void Function()? onClose;
+
+  /// The style of the combobox.
   final VitComboBoxStyle? style;
 
   @override

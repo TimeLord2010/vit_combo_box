@@ -1,3 +1,5 @@
+// ignore_for_file: public_member_api_docs
+
 extension IterableExtension<T> on Iterable<T> {
   /// Creates a new list from the iterable by interspersing a given [separator] between each element.
   /// If the iterable contains less than two elements, the original iterable is returned as a list.
