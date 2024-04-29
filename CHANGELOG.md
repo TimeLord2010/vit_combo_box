@@ -1,3 +1,7 @@
+## 4.0.3
+
+* Added theme classes to the package export.
+
 ## 4.0.2
 
 * Added parameter "onChecked" to `renderCheckBox` from `CheckedComboBox`.
