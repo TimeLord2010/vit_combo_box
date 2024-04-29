@@ -304,7 +304,6 @@ class _VitComboBoxState<T> extends State<VitComboBox<T>> {
             maxHeight: height,
           ),
           decoration: getDecoration(),
-          padding: _optionsStyle?.padding,
           child: child,
         );
       },
@@ -320,6 +319,7 @@ class _VitComboBoxState<T> extends State<VitComboBox<T>> {
     }
     return ListView.builder(
       shrinkWrap: true,
+      padding: _optionsStyle?.padding,
       itemBuilder: (context, index) {
         var item = options.elementAt(index);
         var itemBuilder = widget.itemBuilder;

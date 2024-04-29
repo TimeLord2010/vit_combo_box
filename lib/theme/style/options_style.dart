@@ -6,7 +6,7 @@ class OptionsStyle {
   /// widget.
   final double? containerHeight;
 
-  /// The padding applied to the options container.
+  /// The padding applied to the options [ListView].
   final EdgeInsets? padding;
 
   /// The offset used to adjust the position of the options overlay.

@@ -1,3 +1,7 @@
+## 4.0.4
+
+* `OptionStyle.padding` now affect the underlying ListView instead of the container.
+
 ## 4.0.3
 
 * Added theme classes to the package export.
