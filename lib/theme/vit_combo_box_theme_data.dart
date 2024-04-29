@@ -1,13 +1,12 @@
 import 'package:flutter/widgets.dart';
+import 'package:vit_combo_box/theme/style/vit_combo_box_style.dart';
 
 class VitComboBoxThemeData {
   final RenderBox? Function(BuildContext context)? parentRenderBoxGetter;
-  final BoxDecoration? decoration;
-  final TextStyle? labelStyle;
+  final VitComboBoxStyle? style;
 
   VitComboBoxThemeData({
     this.parentRenderBoxGetter,
-    this.decoration,
-    this.labelStyle,
+    this.style,
   });
 }

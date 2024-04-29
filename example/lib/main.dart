@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:vit_combo_box/theme/style/combo_box_style.dart';
+import 'package:vit_combo_box/theme/style/vit_combo_box_style.dart';
 import 'package:vit_combo_box/vit_combo_box.dart';
 
 void main() {
@@ -38,7 +40,7 @@ class _MyAppState extends State<MyApp> {
       child: Column(
         children: [
           // Regular combo box
-          VitComboBox(
+          VitComboBox.itemBuilder(
             options: set,
             selection: selectedDate,
             itemBuilder: itemBuilder,
@@ -53,7 +55,7 @@ class _MyAppState extends State<MyApp> {
 
           const SizedBox(height: 20),
 
-          VitComboBox(
+          VitComboBox.itemBuilder(
             options: set,
             selection: selectedDate,
             itemBuilder: itemBuilder,
@@ -71,11 +73,15 @@ class _MyAppState extends State<MyApp> {
 
           VitComboBoxTheme(
             data: VitComboBoxThemeData(
-              decoration: BoxDecoration(
-                color: Colors.purple.shade100,
+              style: VitComboBoxStyle(
+                comboBox: ComboBoxStyle(
+                  decoration: BoxDecoration(
+                    color: Colors.purple.shade100,
+                  ),
+                ),
               ),
             ),
-            child: VitComboBox(
+            child: VitComboBox.itemBuilder(
               options: const {true, false},
               label: 'With decoration from theme',
               itemBuilder: (item) {

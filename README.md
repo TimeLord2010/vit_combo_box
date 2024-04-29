@@ -19,7 +19,7 @@ Every implementation is focused on providing the maximum customizability. Meanin
 
 ```dart
  // Regular combo box
-VitComboBox(
+VitComboBox.itemBuilder(
     label: 'My combo box',
     options: optionsSet,
     selection: selectedOption,
@@ -38,5 +38,3 @@ VitComboBox(
 
 
 - The overlay is always shown below the widget. Meaning that it is possible that the overlay is rendered partially outside the screen if the combobox is too close to the end of the screen.
-
-- The `CheckedComboBox`only updates visually the selected item when the overlay is closed.

@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:vit_combo_box/components/combo_boxes/vit_combo_box.dart';
 import 'package:vit_combo_box/components/vit_text.dart';
+import 'package:vit_combo_box/theme/style/vit_combo_box_style.dart';
 
 /// A combobox with no items and displaying an loading indicator in place of
 /// the selected item.
@@ -15,25 +16,18 @@ class FutureComboBox<T> extends StatelessWidget {
     this.onError,
     this.label,
     this.loaderBuilder,
-    this.labelStyle,
-    this.decoration,
-    this.optionsOffset,
-    this.parentRenderBoxGetter,
+    this.style,
   });
 
   factory FutureComboBox.eternal({
     String? label,
     Widget Function()? loaderBuilder,
-    BoxDecoration? decoration,
-    Offset? optionsOffset,
-    RenderBox? Function(BuildContext context)? parentRenderBoxGetter,
+    VitComboBoxStyle? style,
   }) {
     return FutureComboBox(
       label: label,
       loaderBuilder: loaderBuilder,
-      decoration: decoration,
-      optionsOffset: optionsOffset,
-      parentRenderBoxGetter: parentRenderBoxGetter,
+      style: style,
       options: Future.delayed(const Duration(days: 1), () {
         return {};
       }),
@@ -50,10 +44,7 @@ class FutureComboBox<T> extends StatelessWidget {
   final Widget Function(T item) itemBuilder;
   final Widget Function()? loaderBuilder;
   final FutureOr<bool?> Function(T item) onSelected;
-  final TextStyle? labelStyle;
-  final BoxDecoration? decoration;
-  final Offset? optionsOffset;
-  final RenderBox? Function(BuildContext context)? parentRenderBoxGetter;
+  final VitComboBoxStyle? style;
 
   @override
   Widget build(BuildContext context) {
@@ -71,11 +62,9 @@ class FutureComboBox<T> extends StatelessWidget {
   }
 
   VitComboBox<bool> _renderLoading() {
-    return VitComboBox<bool>(
+    return VitComboBox<bool>.itemBuilder(
       options: const {false},
-      decoration: decoration,
-      optionsOffset: optionsOffset,
-      parentRenderBoxGetter: parentRenderBoxGetter,
+      style: style,
       itemBuilder: (item) {
         if (loaderBuilder != null) {
           return loaderBuilder!();
@@ -87,7 +76,6 @@ class FutureComboBox<T> extends StatelessWidget {
       onSelected: (key) => null,
       selection: false,
       label: label,
-      labelStyle: labelStyle,
     );
   }
 
@@ -100,15 +88,12 @@ class FutureComboBox<T> extends StatelessWidget {
       return errorHandler(error);
     }
     if (items != null) {
-      return VitComboBox(
+      return VitComboBox.itemBuilder(
         label: label,
         options: items,
         itemBuilder: itemBuilder,
         onSelected: onSelected,
-        labelStyle: labelStyle,
-        decoration: decoration,
-        optionsOffset: optionsOffset,
-        parentRenderBoxGetter: parentRenderBoxGetter,
+        style: style,
       );
     }
     throw StateError('Either items or error must not be null');

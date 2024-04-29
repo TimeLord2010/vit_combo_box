@@ -6,6 +6,7 @@ import 'package:vit_combo_box/components/vit_button.dart';
 import 'package:vit_combo_box/components/vit_text.dart';
 import 'package:vit_combo_box/theme/colors.dart';
 import 'package:vit_combo_box/theme/decorations.dart';
+import 'package:vit_combo_box/theme/style/index.dart';
 import 'package:vit_combo_box/theme/vit_combo_box_theme.dart';
 import 'package:vit_combo_box/usecases/get_widget_position.dart';
 import 'package:vit_combo_box/usecases/get_widget_size_by_key.dart';
@@ -13,30 +14,29 @@ import 'package:vit_combo_box/usecases/get_widget_size_by_key.dart';
 /// A widget similar to a text box, but on tap, a overlay of options is shown
 /// below it, allowing the user to choose an option.
 class VitComboBox<T> extends StatefulWidget {
-  VitComboBox({
+  VitComboBox._({
     super.key,
-    required this.options,
+    this.options,
     this.label,
     this.selection,
     this.itemBuilder,
     this.onSelected,
     this.selectedItemBuilder,
-    this.decoration,
-    this.height,
     this.optionsBuilder,
     this.onClose,
     this.trailing,
-    this.labelStyle,
-    this.optionsOffset,
-    this.overlayDecorationBuilder,
-    this.parentRenderBoxGetter,
+    this.style,
     this.enabled = true,
-    this.optionsContainerHeight,
   }) {
     assert(
       optionsBuilder != null || itemBuilder != null,
       'Either optionsBuilder or itemBuilder must be given',
     );
+    assert(
+      options != null || optionsBuilder != null,
+      'Either options or optionsBuilder must be given',
+    );
+    assert(options != null || selectedItemBuilder != null, 'Either options or selectedItemBuilder must be given');
     assert(
       (optionsBuilder != null && itemBuilder == null) || (itemBuilder != null && optionsBuilder == null),
       'If optionsBuilder is given, then itemBuilder must be null. The same if itemBuilder is given instead',
@@ -47,37 +47,70 @@ class VitComboBox<T> extends StatefulWidget {
     );
   }
 
+  factory VitComboBox.rawBuilder({
+    required Widget Function() optionsBuilder,
+    Widget Function(T? selection)? selectedItemBuilder,
+    void Function()? onClose,
+    String? label,
+    VitComboBoxStyle? style,
+    T? selection,
+    Widget? trailing,
+    bool enabled = true,
+  }) {
+    return VitComboBox._(
+      label: label,
+      optionsBuilder: optionsBuilder,
+      selectedItemBuilder: selectedItemBuilder,
+      style: style,
+      enabled: enabled,
+      selection: selection,
+      trailing: trailing,
+    );
+  }
+
+  factory VitComboBox.itemBuilder({
+    required Set<T> options,
+    required Widget Function(T item) itemBuilder,
+    required FutureOr<bool?> Function(T key) onSelected,
+    Widget Function(T? selection)? selectedItemBuilder,
+    void Function()? onClose,
+    String? label,
+    VitComboBoxStyle? style,
+    T? selection,
+    Widget? trailing,
+    bool enabled = true,
+  }) {
+    return VitComboBox._(
+      options: options,
+      itemBuilder: itemBuilder,
+      selectedItemBuilder: selectedItemBuilder,
+      onSelected: onSelected,
+      style: style,
+      enabled: enabled,
+      label: label,
+      onClose: onClose,
+      selection: selection,
+      trailing: trailing,
+    );
+  }
+
   /// The text displayed above it so indicate to the user with field this
   /// component belongs to
   final String? label;
-
-  /// The style of the [label].
-  final TextStyle? labelStyle;
 
   /// The current item selected between [options].
   final T? selection;
 
   /// The options to display to the user
-  final Set<T> options;
+  final Set<T>? options;
 
-  /// The height of the widget.
-  final double? height;
-
-  /// The height of the options container displayed when the user selects the
-  /// widget.
-  final double? optionsContainerHeight;
+  final VitComboBoxStyle? style;
 
   /// Indicates to the user whether the widget is interactiable or not.
   final bool enabled;
 
-  /// The decoration for the container of the widget
-  final BoxDecoration? decoration;
-
-  /// The decoration of the overlay container displayed onTap.
-  final BoxDecoration Function(double height)? overlayDecorationBuilder;
-
   /// Optional parameter to build a custom layout when the widget is selected.
-  final Widget Function(Set<T> options)? optionsBuilder;
+  final Widget Function()? optionsBuilder;
 
   /// Optional parameter to build the current selection inside the widget.
   final Widget Function(T? selection)? selectedItemBuilder;
@@ -98,20 +131,6 @@ class VitComboBox<T> extends StatefulWidget {
   /// The widget shown at the end of the widget.
   final Widget? trailing;
 
-  /// The offset used to adjust the position of the options overlay.
-  final Offset? optionsOffset;
-
-  /// Used to calculate the options overlay position.
-  ///
-  /// This is useful if the widget tree can multiple MaterialApp widgets.
-  /// In that case, the position is not calculated correctly by itself.
-  ///
-  /// One option, could be to get the RenderBox of Scaffold:
-  /// ```dart
-  /// var parent = Scaffold.of(context).context.findRenderObject() as RenderBox;
-  /// ```
-  final RenderBox? Function(BuildContext context)? parentRenderBoxGetter;
-
   @override
   State<VitComboBox> createState() => _VitComboBoxState<T>();
 }
@@ -120,19 +139,41 @@ class _VitComboBoxState<T> extends State<VitComboBox<T>> {
   final GlobalKey _widgetKey = GlobalKey();
   OverlayEntry? entry;
 
-  RenderBox? _getParent() {
-    var func = widget.parentRenderBoxGetter;
-    if (func != null) {
-      return func(context);
-    }
-    var theme = VitComboBoxTheme.maybeOf(context);
-    if (theme?.parentRenderBoxGetter != null) {
-      return theme!.parentRenderBoxGetter!(context);
-    }
-    return null;
+  @override
+  Widget build(BuildContext context) {
+    final label = widget.label;
+    final enabled = widget.enabled;
+    return VitButton(
+      onPressed: enabled ? _onPressed : null,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          // Label
+          if (label != null) VitText(label, style: _labelStyle()),
+
+          // Combobox
+          Container(
+            key: _widgetKey,
+            height: _comboBoxStyle?.height,
+            decoration: _getDecoration(),
+            padding: const EdgeInsets.fromLTRB(8, 4, 4, 4),
+            child: Row(
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
+                Expanded(
+                  child: _getSelection(),
+                ),
+                widget.trailing ?? _getDefaultSuffix(),
+              ],
+            ),
+          ),
+        ],
+      ),
+    );
   }
 
-  void onPressed() {
+  void _onPressed() {
     entry = OverlayEntry(
       builder: (context) {
         var position = getWidgetPosition(
@@ -141,7 +182,7 @@ class _VitComboBoxState<T> extends State<VitComboBox<T>> {
         );
         var size = getWidgetSize(_widgetKey);
 
-        var offset = widget.optionsOffset;
+        var offset = _optionsStyle?.offset;
         if (offset != null) {
           position += offset;
         }
@@ -180,69 +221,45 @@ class _VitComboBoxState<T> extends State<VitComboBox<T>> {
     Overlay.of(context).insert(entry!);
   }
 
-  @override
-  Widget build(BuildContext context) {
-    final label = widget.label;
-    final enabled = widget.enabled;
-    return VitButton(
-      onPressed: enabled ? onPressed : null,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          // Label
-          if (label != null) VitText(label, style: _labelStyle()),
-
-          // Combobox
-          Container(
-            key: _widgetKey,
-            height: widget.height ?? 32,
-            decoration: _getDecoration(),
-            padding: const EdgeInsets.fromLTRB(8, 4, 4, 4),
-            child: Row(
-              crossAxisAlignment: CrossAxisAlignment.center,
-              children: [
-                Expanded(
-                  child: getSelection(),
-                ),
-                widget.trailing ?? _getDefaultSuffix(),
-              ],
-            ),
-          ),
-        ],
-      ),
-    );
-  }
-
   TextStyle _labelStyle() {
-    final enabled = widget.enabled;
-
     // Instance style
-    if (widget.labelStyle != null) return widget.labelStyle!;
+    var localStyle = widget.style?.label;
+    if (localStyle != null) return localStyle;
 
     // Theme style
-    var theme = VitComboBoxTheme.maybeOf(context);
-    if (theme != null && theme.labelStyle != null) {
-      return theme.labelStyle!;
-    }
+    var themeStyle = VitComboBoxTheme.maybeOf(context)?.style?.label;
+    if (themeStyle != null) return themeStyle;
 
     // Default style
+    final enabled = widget.enabled;
     return TextStyle(
       color: enabled ? black : black.withOpacity(0.4),
     );
   }
 
-  BoxDecoration _getDecoration() {
-    // Instance decoration
-    if (widget.decoration != null) {
-      return widget.decoration!;
-    }
+  OptionsStyle? get _optionsStyle {
+    var localStyle = widget.style?.options;
+    if (localStyle != null) return localStyle;
 
-    // Theme decoration
-    var theme = VitComboBoxTheme.maybeOf(context);
-    if (theme != null && theme.decoration != null) {
-      return theme.decoration!;
-    }
+    var theme = VitComboBoxTheme.maybeOf(context)?.style?.options;
+    if (theme != null) return theme;
+
+    return null;
+  }
+
+  ComboBoxStyle? get _comboBoxStyle {
+    var localStyle = widget.style?.comboBox;
+    if (localStyle != null) return localStyle;
+
+    var themeStyle = VitComboBoxTheme.maybeOf(context)?.style?.comboBox;
+    if (themeStyle != null) return themeStyle;
+
+    return null;
+  }
+
+  BoxDecoration _getDecoration() {
+    var decoration = _comboBoxStyle?.decoration;
+    if (decoration != null) return decoration;
 
     // Default decoration
     var enabled = widget.enabled;
@@ -265,12 +282,12 @@ class _VitComboBoxState<T> extends State<VitComboBox<T>> {
     return TweenAnimationBuilder(
       tween: Tween<double>(
         begin: 20.0,
-        end: widget.optionsContainerHeight ?? 150,
+        end: _optionsStyle?.containerHeight ?? 150,
       ),
       curve: Curves.decelerate,
       duration: const Duration(milliseconds: 250),
       builder: (context, height, child) {
-        var decorationBuilder = widget.overlayDecorationBuilder;
+        var decorationBuilder = _optionsStyle?.decorationBuilder;
         BoxDecoration getDecoration() {
           if (decorationBuilder == null) return defaultOverlayDecoration;
           return decorationBuilder(height);
@@ -281,6 +298,7 @@ class _VitComboBoxState<T> extends State<VitComboBox<T>> {
             maxHeight: height,
           ),
           decoration: getDecoration(),
+          padding: _optionsStyle?.padding,
           child: child,
         );
       },
@@ -292,7 +310,7 @@ class _VitComboBoxState<T> extends State<VitComboBox<T>> {
     var optionsBuilder = widget.optionsBuilder;
     var options = widget.options;
     if (optionsBuilder != null) {
-      return optionsBuilder(options);
+      return optionsBuilder();
     }
     return ListView.builder(
       shrinkWrap: true,
@@ -324,11 +342,11 @@ class _VitComboBoxState<T> extends State<VitComboBox<T>> {
           ),
         );
       },
-      itemCount: options.length,
+      itemCount: options!.length,
     );
   }
 
-  Widget getSelection() {
+  Widget _getSelection() {
     var selectionBuilder = widget.selectedItemBuilder;
     var selection = widget.selection;
     if (selection == null) {
@@ -337,15 +355,24 @@ class _VitComboBoxState<T> extends State<VitComboBox<T>> {
       }
       return const SizedBox.shrink();
     }
-    T selected = widget.options.firstWhere((x) => x == selection);
     if (selectionBuilder != null) {
-      return selectionBuilder(selected);
+      return selectionBuilder(selection);
     }
+    T selected = widget.options!.firstWhere((x) => x == selection);
     var itemBuilder = widget.itemBuilder;
     if (itemBuilder == null) {
       var message = 'No item builder given to selected item in combo box';
       return VitText.error(message);
     }
     return itemBuilder(selected);
+  }
+
+  RenderBox? _getParent() {
+    var func = widget.style?.parentRenderBoxGetter;
+    if (func != null) return func(context);
+
+    var themeGetter = VitComboBoxTheme.maybeOf(context)?.parentRenderBoxGetter;
+    if (themeGetter != null) return themeGetter(context);
+    return null;
   }
 }

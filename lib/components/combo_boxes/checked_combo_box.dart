@@ -3,11 +3,12 @@ import 'package:vit_combo_box/components/combo_boxes/vit_combo_box.dart';
 import 'package:vit_combo_box/components/vit_button.dart';
 import 'package:vit_combo_box/components/vit_check_box.dart';
 import 'package:vit_combo_box/extensions/iterable_extension.dart';
+import 'package:vit_combo_box/theme/style/vit_combo_box_style.dart';
 
 /// A combo box with checked boxes at the left of each item.
 ///
 /// The options overlay does not close when a check box is checked.
-class CheckedComboBox<T> extends StatelessWidget {
+class CheckedComboBox<T> extends StatefulWidget {
   const CheckedComboBox({
     super.key,
     required this.options,
@@ -19,53 +20,39 @@ class CheckedComboBox<T> extends StatelessWidget {
     this.selectionBuilder,
     this.onClose,
     this.renderCheckBox,
-    this.labelStyle,
-    this.overlayDecorationBuilder,
-    this.parentRenderBoxGetter,
-    this.optionsOffset,
-    this.height,
-    this.decoration,
-    this.optionsContainerHeight,
+    this.style,
   });
 
   final Set<T> options;
   final Set<T> selectedItems;
   final String? label;
-  final TextStyle? labelStyle;
   final bool enabled;
-  final BoxDecoration Function(double height)? overlayDecorationBuilder;
   final Widget Function(T item) itemBuilder;
   final void Function(T item, bool selected)? onSelected;
   final Widget Function()? selectionBuilder;
   final Widget Function(bool isChecked)? renderCheckBox;
   final void Function()? onClose;
-  final Offset? optionsOffset;
-  final RenderBox? Function(BuildContext context)? parentRenderBoxGetter;
-  final double? height;
-  final BoxDecoration? decoration;
-  final double? optionsContainerHeight;
+  final VitComboBoxStyle? style;
 
   @override
+  State<CheckedComboBox<T>> createState() => _CheckedComboBoxState<T>();
+}
+
+class _CheckedComboBoxState<T> extends State<CheckedComboBox<T>> {
+  @override
   Widget build(BuildContext context) {
-    return VitComboBox(
-      label: label,
-      labelStyle: labelStyle,
-      options: options,
-      enabled: enabled,
-      onClose: onClose,
-      height: height,
-      decoration: decoration,
-      overlayDecorationBuilder: overlayDecorationBuilder,
-      parentRenderBoxGetter: parentRenderBoxGetter,
-      optionsOffset: optionsOffset,
-      optionsContainerHeight: optionsContainerHeight,
+    return VitComboBox.rawBuilder(
+      label: widget.label,
+      style: widget.style,
+      enabled: widget.enabled,
+      onClose: widget.onClose,
       selectedItemBuilder: (_) {
-        var builder = selectionBuilder;
+        var builder = widget.selectionBuilder;
         if (builder == null) {
           return Wrap(
-            children: selectedItems
+            children: widget.selectedItems
                 .map((x) {
-                  return itemBuilder(x);
+                  return widget.itemBuilder(x);
                 })
                 .separatedBy(const Text(', '))
                 .toList(),
@@ -73,19 +60,20 @@ class CheckedComboBox<T> extends StatelessWidget {
         }
         return builder();
       },
-      optionsBuilder: (options) {
+      optionsBuilder: () {
         return StatefulBuilder(
-          builder: (context, setState) {
+          builder: (context, updateOptions) {
             return _renderOptions(
-              options: options,
-              selectedItems: selectedItems,
+              options: widget.options,
+              selectedItems: widget.selectedItems,
               onSelection: (item, value) {
-                if (onSelected != null) onSelected!(item, value);
+                if (widget.onSelected != null) widget.onSelected!(item, value);
                 if (value) {
-                  selectedItems.add(item);
+                  widget.selectedItems.add(item);
                 } else {
-                  selectedItems.remove(item);
+                  widget.selectedItems.remove(item);
                 }
+                updateOptions(() {});
                 setState(() {});
               },
             );
@@ -107,13 +95,13 @@ class CheckedComboBox<T> extends StatelessWidget {
         onChecked(bool value) => onSelection(item, value);
 
         Widget buildCheckBox() {
-          if (renderCheckBox == null) {
+          if (widget.renderCheckBox == null) {
             return VitCheckBox(
               isChecked: isChecked,
               onChecked: onChecked,
             );
           }
-          return renderCheckBox!(isChecked);
+          return widget.renderCheckBox!(isChecked);
         }
 
         return Padding(
@@ -136,7 +124,7 @@ class CheckedComboBox<T> extends StatelessWidget {
                     ),
                   ],
                 ),
-                itemBuilder(item),
+                widget.itemBuilder(item),
               ],
             ),
           ),
