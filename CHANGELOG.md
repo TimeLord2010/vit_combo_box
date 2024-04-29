@@ -1,3 +1,7 @@
+## 4.0.2
+
+* Added parameter "onChecked" to `renderCheckBox` from `CheckedComboBox`.
+
 ## 4.0.1
 
 * Added documentation to various elements.

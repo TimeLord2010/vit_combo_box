@@ -46,7 +46,7 @@ class CheckedComboBox<T> extends StatefulWidget {
   final Widget Function()? selectionBuilder;
 
   /// Used to build the checkbox, not including the text.
-  final Widget Function(bool isChecked)? renderCheckBox;
+  final Widget Function(bool isChecked, void Function(bool value) onCheck)? renderCheckBox;
 
   /// Called when the overlay is closed.
   final void Function()? onClose;
@@ -121,7 +121,7 @@ class _CheckedComboBoxState<T> extends State<CheckedComboBox<T>> {
               onChecked: onChecked,
             );
           }
-          return widget.renderCheckBox!(isChecked);
+          return widget.renderCheckBox!(isChecked, onChecked);
         }
 
         return Padding(
