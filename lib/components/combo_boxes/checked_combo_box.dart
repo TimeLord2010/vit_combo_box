@@ -66,7 +66,7 @@ class _CheckedComboBoxState<T> extends State<CheckedComboBox<T>> {
       style: widget.style,
       enabled: widget.enabled,
       onClose: widget.onClose,
-      selectedItemBuilder: (_) {
+      selectedItemBuilder: () {
         var builder = widget.selectionBuilder;
         if (builder == null) {
           return Wrap(
@@ -80,7 +80,7 @@ class _CheckedComboBoxState<T> extends State<CheckedComboBox<T>> {
         }
         return builder();
       },
-      optionsBuilder: () {
+      optionsBuilder: (entry) {
         return StatefulBuilder(
           builder: (context, updateOptions) {
             return _renderOptions(

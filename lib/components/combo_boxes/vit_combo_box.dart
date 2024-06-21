@@ -50,8 +50,8 @@ class VitComboBox<T> extends StatefulWidget {
   /// Creates a combobox with a custom option overlay by providing
   /// [optionsBuilder].
   factory VitComboBox.rawBuilder({
-    required Widget Function() optionsBuilder,
-    Widget Function(T? selection)? selectedItemBuilder,
+    required Widget Function(OverlayEntry entry) optionsBuilder,
+    required Widget Function() selectedItemBuilder,
     void Function()? onClose,
     String? label,
     VitComboBoxStyle? style,
@@ -62,7 +62,7 @@ class VitComboBox<T> extends StatefulWidget {
     return VitComboBox._(
       label: label,
       optionsBuilder: optionsBuilder,
-      selectedItemBuilder: selectedItemBuilder,
+      selectedItemBuilder: (_) => selectedItemBuilder(),
       onClose: onClose,
       style: style,
       enabled: enabled,
@@ -116,7 +116,7 @@ class VitComboBox<T> extends StatefulWidget {
   final bool enabled;
 
   /// Optional parameter to build a custom layout when the widget is selected.
-  final Widget Function()? optionsBuilder;
+  final Widget Function(OverlayEntry entry)? optionsBuilder;
 
   /// Optional parameter to build the current selection inside the widget.
   final Widget Function(T? selection)? selectedItemBuilder;
@@ -315,7 +315,7 @@ class _VitComboBoxState<T> extends State<VitComboBox<T>> {
     var optionsBuilder = widget.optionsBuilder;
     var options = widget.options;
     if (optionsBuilder != null) {
-      return optionsBuilder();
+      return optionsBuilder(entry!);
     }
     return ListView.builder(
       shrinkWrap: true,

@@ -1,3 +1,8 @@
+## 4.1.0
+
+* `VitComboBox.optionsBuilder` now has the parameter "entry" to close the overlay.
+* `selectedItemBuilder` from `VitComboBox.rawBuilder` now does not have the parameter "selection".
+
 ## 4.0.4
 
 * `OptionStyle.padding` now affect the underlying ListView instead of the container.
