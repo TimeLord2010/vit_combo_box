@@ -1,3 +1,8 @@
+## 4.2.0
+
+* Added `padding` options to `ComboBoxStyle`.
+* Added `duration`, `startingHeight`, and `curve` to `OptionsStyle`.
+
 ## 4.1.0
 
 * `VitComboBox.optionsBuilder` now has the parameter "entry" to close the overlay.

@@ -8,9 +8,13 @@ class ComboBoxStyle {
   /// The height of the widget.
   final double? height;
 
+  /// The padding applied to the combo box container.
+  final EdgeInsets? padding;
+
   /// Creates a combobox style instance.
   ComboBoxStyle({
     this.decoration,
     this.height,
+    this.padding,
   });
 }

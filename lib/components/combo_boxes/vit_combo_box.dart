@@ -36,9 +36,11 @@ class VitComboBox<T> extends StatefulWidget {
       options != null || optionsBuilder != null,
       'Either options or optionsBuilder must be given',
     );
-    assert(options != null || selectedItemBuilder != null, 'Either options or selectedItemBuilder must be given');
+    assert(options != null || selectedItemBuilder != null,
+        'Either options or selectedItemBuilder must be given');
     assert(
-      (optionsBuilder != null && itemBuilder == null) || (itemBuilder != null && optionsBuilder == null),
+      (optionsBuilder != null && itemBuilder == null) ||
+          (itemBuilder != null && optionsBuilder == null),
       'If optionsBuilder is given, then itemBuilder must be null. The same if itemBuilder is given instead',
     );
     assert(
@@ -163,7 +165,7 @@ class _VitComboBoxState<T> extends State<VitComboBox<T>> {
             key: _widgetKey,
             height: _comboBoxStyle?.height,
             decoration: _getDecoration(),
-            padding: const EdgeInsets.fromLTRB(8, 4, 4, 4),
+            padding: _comboboxPadding,
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               children: [
@@ -276,6 +278,11 @@ class _VitComboBoxState<T> extends State<VitComboBox<T>> {
     );
   }
 
+  EdgeInsets get _comboboxPadding {
+    var padding = _comboBoxStyle?.padding;
+    return padding ?? const EdgeInsets.fromLTRB(8, 4, 4, 4);
+  }
+
   VitAssetIcon _getDefaultSuffix() {
     return VitAssetIcon(
       asset: 'expand',
@@ -285,15 +292,16 @@ class _VitComboBoxState<T> extends State<VitComboBox<T>> {
 
   /// Displays the options in contaner where the height is animated.
   Widget _optionsContainer() {
+    var style = _optionsStyle;
     return TweenAnimationBuilder(
       tween: Tween<double>(
-        begin: 20.0,
-        end: _optionsStyle?.containerHeight ?? 150,
+        begin: style?.startingHeight ?? 20.0,
+        end: style?.containerHeight ?? 150,
       ),
-      curve: Curves.decelerate,
-      duration: const Duration(milliseconds: 250),
+      curve: style?.curve ?? Curves.decelerate,
+      duration: style?.duration ?? const Duration(milliseconds: 250),
       builder: (context, height, child) {
-        var decorationBuilder = _optionsStyle?.decorationBuilder;
+        var decorationBuilder = style?.decorationBuilder;
         BoxDecoration getDecoration() {
           if (decorationBuilder == null) return defaultOverlayDecoration;
           return decorationBuilder(height);

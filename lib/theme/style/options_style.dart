@@ -22,11 +22,23 @@ class OptionsStyle {
   /// animation.
   final BoxDecoration Function(double height)? decorationBuilder;
 
+  /// The duration of the expanding animation of options container.
+  final Duration? duration;
+
+  /// The initial height used at the begining of the expanding animation.
+  final double? startingHeight;
+
+  /// The curve used in the expanding animation.
+  final Curve? curve;
+
   /// Creates a instance of the options style class.
   OptionsStyle({
     this.containerHeight,
     this.padding,
     this.offset,
     this.decorationBuilder,
+    this.duration,
+    this.startingHeight,
+    this.curve,
   });
 }
