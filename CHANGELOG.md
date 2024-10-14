@@ -1,3 +1,7 @@
+## 4.3.0
+
+* Added `labelPadding` to `ComboBoxStyle`.
+
 ## 4.2.0
 
 * Added `padding` options to `ComboBoxStyle`.

@@ -160,6 +160,8 @@ class _VitComboBoxState<T> extends State<VitComboBox<T>> {
           // Label
           if (label != null) VitText(label, style: _labelStyle()),
 
+          SizedBox(height: _labelSpacing),
+
           // Combobox
           Container(
             key: _widgetKey,
@@ -253,6 +255,16 @@ class _VitComboBoxState<T> extends State<VitComboBox<T>> {
     if (theme != null) return theme;
 
     return null;
+  }
+
+  double get _labelSpacing {
+    var localSpacing = widget.style?.labelSpacing;
+    if (localSpacing != null) return localSpacing;
+
+    var themeSpacing = VitComboBoxTheme.maybeOf(context)?.labelSpacing;
+    if (themeSpacing != null) return themeSpacing;
+
+    return 1;
   }
 
   ComboBoxStyle? get _comboBoxStyle {

@@ -7,6 +7,9 @@ class VitComboBoxStyle {
   /// The style of the label.
   final TextStyle? label;
 
+  /// The spacing between the label and the combobox.
+  final double? labelSpacing;
+
   /// The style of the options overlay.
   final OptionsStyle? options;
 
@@ -27,6 +30,7 @@ class VitComboBoxStyle {
   /// Creates a instance of a class used to decorate the combobox component.
   VitComboBoxStyle({
     this.comboBox,
+    this.labelSpacing,
     this.label,
     this.options,
     this.parentRenderBoxGetter,
